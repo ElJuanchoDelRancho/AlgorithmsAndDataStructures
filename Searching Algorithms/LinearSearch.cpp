@@ -17,12 +17,11 @@ inline int random_number(std::mt19937 &rng, int lower, int higher) {
 
 int linear_search(int arr[], int size, int key);
 
-int main()
-{
+int main() {
     const int size = 10000;
     int array[size];
     int value_to_search;
-    int position;
+    int index;
 
     //std::random_device rd;
     auto seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -35,10 +34,10 @@ int main()
 
     std::cout << "\nEnter a number between 1 and 1000 to search in the array\n";
     std::cin >> value_to_search;
-    position = linear_search(array, size, value_to_search);
+    index = linear_search(array, size, value_to_search);
 
-    if (position != -1) {
-        std::cout << "The number searched is in position: " << position << '\n';
+    if (index != -1) {
+        std::cout << "The number searched is in position: " << index << '\n';
     } else {
         std::cout << "The number isn't in the array\n";
     }

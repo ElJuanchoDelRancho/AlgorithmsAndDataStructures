@@ -1,6 +1,6 @@
 /**
-    BinarySearch.cpp
-    Purpose: Binary Search in array of 10,000 elements
+    InsertionSort.cpp
+    Purpose: Insertion sort in an array of 10,000 elements
 
     @author: Juan Castillo
     @version: 1.0 03/06/2019
@@ -16,13 +16,10 @@ inline int random_number(std::mt19937 &rng, int lower, int higher) {
 }
 
 void insertion_sort(int arr[], int size);
-int binary_search(int arr[], int size, int key);
 
 int main() {
     const int size = 10000;
     int array[size];
-    int value_to_search;
-    int index;
 
     //std::random_device rd;
     auto seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -30,31 +27,24 @@ int main() {
 
     for (int i = 0; i < size; i++) {
         array[i] = random_number(rng, 1, 1000);
-        
-    }
-
-    insertion_sort(array, size);
-    for (int i = 0; i < size; i++) {
         std::cout << array[i] << ' ';
     }
 
-    std::cout << "\nEnter a number between 1 and 1000 to search in the array\n";
-    std::cin >> value_to_search;
-    index = binary_search(array, size, value_to_search);
+    insertion_sort(array, size);
 
-    if (index != -1) {
-        std::cout << "The number searched is in index: " << index << '\n';
-    } else {
-        std::cout << "The number isn't in the array\n";
+    std::cout << "\n\n";
+    std::cout << "The sorted array is:\n";
+    for (int i = 0; i < size; i++) {
+        std::cout << array[i] << ' ';
     }
-    std::cin.get();
+    std::cout << "\n\n";
     std::cin.get();
 
     return 0;
 }
 
 void insertion_sort(int arr[], int size) {
-	int current;
+    int current;
 	int aux_index;
 	for (int i = 1; i < size; i++) {
 		current = arr[i];
@@ -65,20 +55,4 @@ void insertion_sort(int arr[], int size) {
 		}
 		arr[aux_index] = current;
 	}
-}
-
-int binary_search(int arr[], int size, int key) {
-    int low = 0;
-    int high = size - 1;
-    while (low <= high) {
-        int mid = low + (high - low) / 2;
-        if (arr[mid] == key) {
-            return mid;
-        } else if (arr[mid] > key) {
-            high = mid - 1;
-        } else {
-            low = mid + 1;
-        }
-    }
-    return -1;
 }
