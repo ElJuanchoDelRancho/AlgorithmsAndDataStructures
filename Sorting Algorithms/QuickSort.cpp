@@ -1,6 +1,6 @@
 /**
-    BubbleSort.cpp
-    Purpose: Bubble sort in an array of 10,000 elements
+    QuickSort.cpp
+    Purpose: Quick sort in an array of 10,000 elements
 
     @author: Juan Castillo
     @version: 1.0 03/06/2019
@@ -15,6 +15,9 @@ inline int random_number(std::mt19937 &rng, int lower, int higher) {
     return dist(rng);
 }
 
+void quick_sort(int arr[], int low, int high);
+int partition(int arr[], int low, int high);
+
 int main() {
     const int size = 10000;
     int array[size];
@@ -28,7 +31,7 @@ int main() {
         std::cout << array[i] << ' ';
     }
 
-    bubble_sort(array, size);
+    quick_sort(array, 0, size - 1);
 
     std::cout << "\n\n";
     std::cout << "The sorted array is:\n";
@@ -39,4 +42,33 @@ int main() {
     std::cin.get();
 
     return 0;
+}
+
+void quick_sort(int arr[], int low, int high) {
+    if (low < high) {
+		int mid = partition(arr, low, high);
+        quick_sort(arr, low, mid - 1);
+        quick_sort(arr, mid + 1, high);
+	}
+}
+
+int partition(int arr[], int low, int high) {
+    int i = low;
+    int j = high - 1;
+    int pivot = arr[high];
+    int aux;
+    while (i <= j) {
+        while (arr[i] < pivot) i++;
+        while (arr[j] > pivot) j--;
+        if (i <= j) {
+            aux = arr[i];
+            arr[i] = arr[j];
+            arr[j] = aux;
+            i++;
+            j--;
+        }
+    }
+    arr[high] = arr[i];
+    arr[i] = pivot;
+    return i;
 }
