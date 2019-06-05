@@ -45,16 +45,16 @@ int main() {
 
 void selection_sort(int arr[], int size) {
     int aux;
-	int index_of_min;
-	for (int i = 0; i < size - 1; i++) {
-		index_of_min = i;
-		for (int j = i + 1; j < size; j++) {
-			if (arr[j] < arr[index_of_min]) {
-				index_of_min = j;
-			}
-		}
-		aux = arr[i];
-		arr[i] = arr[index_of_min];
-		arr[index_of_min] = aux;
-	}
+    int index_of_min;
+    for (int i = 0; i < size - 1; i++) {
+        index_of_min = i;
+        for (int j = i + 1; j < size; j++) {
+            if (arr[j] < arr[index_of_min]) {
+                index_of_min = j;
+            }
+        }
+        aux = arr[i];
+        arr[i] = arr[index_of_min];
+        arr[index_of_min] = aux;
+    }
 }

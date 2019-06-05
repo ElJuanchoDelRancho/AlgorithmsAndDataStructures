@@ -1,9 +1,9 @@
 /**
-    SinglyLinkedList.cpp
-    Purpose: Singly Linked List implementation in C++
+    DoublyLinkedList.cpp
+    Purpose: Doubly Linked List implementation in C++
 
     @author: Juan Castillo
-    @version: 1.1 04/06/2019
+    @version: 1.0 04/06/2019
 */
 
 #include <iostream>
@@ -13,19 +13,20 @@ template<class type>
 class Node
 {
 public:
-    Node() { next = nullptr; }
-    Node(type data) { this->data = data; next = nullptr; }
+    Node() { next = nullptr; prev = nullptr; }
+    Node(type data) { this->data = data; next = nullptr; prev = nullptr; }
 
     type data;
     Node<type>* next;
+    Node<type>* prev;
 };
 
 template<class type>
-class LinkedList
+class DLinkedList
 {
 public:
-    LinkedList();
-    ~LinkedList();
+    DLinkedList();
+    ~DLinkedList();
 
     const type& front() const;
     const type& back() const;
@@ -40,6 +41,19 @@ public:
     bool erase(const type& value);
     bool empty() const;
     void clear();
+    void print() {
+        Node<type>* temp = head;
+        while (temp->next != nullptr) {
+            std::cout << temp->data << ' ';
+            temp = temp->next;
+        }
+        std::cout << temp->data << '\n';
+        while (temp != nullptr) {
+            std::cout << temp->data << ' ';
+            temp = temp->prev;
+        }
+        std::cout << '\n';
+    }
 
     int count;
 
@@ -48,18 +62,18 @@ private:
 };
 
 template<class type>
-LinkedList<type>::LinkedList() {
+DLinkedList<type>::DLinkedList() {
     head = nullptr;
     count = 0;
 }
 
 template<class type>
-LinkedList<type>::~LinkedList() {
+DLinkedList<type>::~DLinkedList() {
     clear();
 }
 
 template<class type>
-const type& LinkedList<type>::front() const {
+const type& DLinkedList<type>::front() const {
     if (empty() == true) {
         throw std::underflow_error("List is empty");
     }
@@ -67,7 +81,7 @@ const type& LinkedList<type>::front() const {
 }
 
 template<class type>
-const type& LinkedList<type>::back() const {
+const type& DLinkedList<type>::back() const {
     if (empty() == true) {
         throw std::underflow_error("List is empty");
     }
@@ -79,15 +93,18 @@ const type& LinkedList<type>::back() const {
 }
 
 template<class type>
-void LinkedList<type>::push_front(const type& value) {
+void DLinkedList<type>::push_front(const type& value) {
     Node<type>* temp = new Node<type>(value);
     temp->next = head;
+    if (head != nullptr) {
+        head->prev = temp;
+    }
     head = temp;
     count++;
 }
 
 template<class type>
-void LinkedList<type>::push_back(const type& value) {
+void DLinkedList<type>::push_back(const type& value) {
     Node<type>* temp = new Node<type>(value);
     if (head == nullptr) {
         head = temp;
@@ -97,16 +114,15 @@ void LinkedList<type>::push_back(const type& value) {
             aux = aux->next;
         }
         aux->next = temp;
+        temp->prev = aux;
     }
     count++;
 }
 
 template<class type>
-bool LinkedList<type>::insert_before(const type& key, const type& value) {
-    Node<type>* before;
+bool DLinkedList<type>::insert_before(const type& key, const type& value) {
     Node<type>* current = head;
     while (current != nullptr && current->data != key) {
-        before = current;
         current = current->next;
     }
     if (current == nullptr) {
@@ -114,17 +130,20 @@ bool LinkedList<type>::insert_before(const type& key, const type& value) {
     }
     Node<type>* temp = new Node<type>(value);
     temp->next = current;
+    temp->prev = current->prev;
     if (current == head) {
+        head->prev = temp;
         head = temp;
     } else {
-        before->next = temp;
+        current->prev->next = temp;
+        current->prev = temp;
     }
     count++;
     return true;
 }
 
 template<class type>
-bool LinkedList<type>::insert_after(const type& key, const type& value) {
+bool DLinkedList<type>::insert_after(const type& key, const type& value) {
     Node<type>* aux = head;
     while (aux != nullptr && aux->data != key) {
         aux = aux->next;
@@ -134,43 +153,48 @@ bool LinkedList<type>::insert_after(const type& key, const type& value) {
     }
     Node<type>* temp = new Node<type>(value);
     temp->next = aux->next;
+    temp->prev = aux;
+    if (aux->next != nullptr) {
+        aux->next->prev = temp;
+    }
     aux->next = temp;
     count++;
     return true;
 }
 
 template<class type>
-void LinkedList<type>::pop_front() {
+void DLinkedList<type>::pop_front() {
     if (head != nullptr) {
         Node<type>* temp = head;
         head = head->next;
+        if (head != nullptr) {
+            head->prev = nullptr;
+        }
         count--;
         delete temp;
     }
 }
 
 template<class type>
-void LinkedList<type>::pop_back() {
+void DLinkedList<type>::pop_back() {
     if (head != nullptr) {
-        Node<type>* before;
-        Node<type>* current = head;
-        while (current->next != nullptr) {
-            before = current;
-            current = current->next;
+        Node<type>* aux = head;
+        while (aux->next != nullptr) {
+            aux = aux->next;
         }
-        if (current == head) {
+        Node<type>* temp = aux;
+        if (aux == head) {
             head = nullptr;
         } else {
-            before->next = nullptr;
+            aux->prev->next = nullptr;
         }
-        Node<type>* temp = current;
         count--;
         delete temp;
     }
 }
 
 template<class type>
-const type& LinkedList<type>::operator[](int index) {
+const type& DLinkedList<type>::operator[](int index) {
     if (index < 0 || index >= count) {
         throw std::invalid_argument("Invalid index");
     }
@@ -184,7 +208,7 @@ const type& LinkedList<type>::operator[](int index) {
 }
 
 template<class type>
-type& LinkedList<type>::operator[](int index) const {
+type& DLinkedList<type>::operator[](int index) const {
     if (index < 0 || index >= count) {
         throw std::invalid_argument("Invalid index");
     }
@@ -198,11 +222,9 @@ type& LinkedList<type>::operator[](int index) const {
 }
 
 template<class type>
-bool LinkedList<type>::erase(const type& value) {
-    Node<type>* before;
+bool DLinkedList<type>::erase(const type& value) {
     Node<type>* current = head;
     while (current != nullptr && current->data != value) {
-        before = current;
         current = current->next;
     }
     if (current == nullptr) {
@@ -210,8 +232,12 @@ bool LinkedList<type>::erase(const type& value) {
     }
     if (current == head) {
         head = head->next;
+        head->prev = nullptr;
+    } else if (current->next == nullptr) {
+        current->prev->next = nullptr;
     } else {
-        before->next = current->next;
+        current->prev->next = current->next;
+        current->next->prev = current->prev;
     }
     count--;
     delete current;
@@ -219,19 +245,19 @@ bool LinkedList<type>::erase(const type& value) {
 }
 
 template<class type>
-bool LinkedList<type>::empty() const {
+bool DLinkedList<type>::empty() const {
     return head == nullptr;
 }
 
 template<class type>
-void LinkedList<type>::clear() {
+void DLinkedList<type>::clear() {
     while (empty() == false) {
         pop_front();
     }
 }
 
 int main() {
-    LinkedList<int> my_list;
+    DLinkedList<int> my_list;
 
     my_list.push_back(1);
     my_list.push_back(2);
@@ -240,9 +266,14 @@ int main() {
     my_list.push_back(5);
     my_list.push_back(6);
 
-    for (int i = 0; i < my_list.count; i++) {
+    my_list.erase(3);
+
+    /*for (int i = 0; i < my_list.count; i++) {
         std::cout << my_list[i] << " ";
-    }
+    }*/
+
+    my_list.print();
+
     std::cout << std::endl;
     std::cin.get();
 

@@ -45,27 +45,27 @@ int main() {
 
 void shaker_sort(int arr[], int size) {
     int aux;
-	int left = 0;
-	int right = size - 1;
-	int last_exchange;
-	while (left < right) {
-		for (int i = right; i > left; i--) {
-			if (arr[i] < arr[i - 1]) {
-				aux = arr[i];
-				arr[i] = arr[i - 1];
-				arr[i - 1] = aux;
-				last_exchange = i;
-			}
-		}
-		left = last_exchange;
-		for (int i = left; i < right; i++) {
-			if (arr[i] > arr[i + 1]) {
-				aux = arr[i];
-				arr[i] = arr[i + 1];
-				arr[i + 1] = aux;
-				last_exchange = i;
-			}
-		}
-		right = last_exchange;
-	}
+    int left = 0;
+    int right = size - 1;
+    int last_exchange;
+    while (left < right) {
+        for (int i = right; i > left; i--) {
+            if (arr[i] < arr[i - 1]) {
+                aux = arr[i];
+                arr[i] = arr[i - 1];
+                arr[i - 1] = aux;
+                last_exchange = i;
+            }
+        }
+        left = last_exchange;
+        for (int i = left; i < right; i++) {
+            if (arr[i] > arr[i + 1]) {
+                aux = arr[i];
+                arr[i] = arr[i + 1];
+                arr[i + 1] = aux;
+                last_exchange = i;
+            }
+        }
+        right = last_exchange;
+    }
 }

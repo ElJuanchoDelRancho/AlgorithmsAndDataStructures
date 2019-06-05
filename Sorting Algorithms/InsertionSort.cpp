@@ -45,14 +45,14 @@ int main() {
 
 void insertion_sort(int arr[], int size) {
     int current;
-	int aux_index;
-	for (int i = 1; i < size; i++) {
-		current = arr[i];
-		aux_index = i;
-		while (current < arr[aux_index - 1] && aux_index > 0) {
-			arr[aux_index] = arr[aux_index - 1];
-			aux_index--;
-		}
-		arr[aux_index] = current;
-	}
+    int aux_index;
+    for (int i = 1; i < size; i++) {
+        current = arr[i];
+        aux_index = i;
+        while (current < arr[aux_index - 1] && aux_index > 0) {
+            arr[aux_index] = arr[aux_index - 1];
+            aux_index--;
+        }
+        arr[aux_index] = current;
+    }
 }
