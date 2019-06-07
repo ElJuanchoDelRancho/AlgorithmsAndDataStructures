@@ -3,7 +3,7 @@
     Purpose: Circular Singly Linked List implementation in C++
 
     @author: Juan Castillo
-    @version: 1.0 06/06/2019
+    @version: 1.1 07/06/2019
 */
 
 #include <iostream>
@@ -14,7 +14,7 @@ class Node
 {
 public:
     Node() { next = this; }
-    Node(type data) { this->data = data; next = this; }
+    Node(const type& data) { this->data = data; next = this; }
 
     type data;
     Node<type>* next;
@@ -46,7 +46,6 @@ public:
             std::cout << temp->data << ' ';
             temp = temp->next;
         } while (temp != last->next);
-        std::cout << "Pitones";
     }
 
     int count;
@@ -167,7 +166,7 @@ void CLinkedList<type>::pop_front() {
     if (last != nullptr) {
         Node<type>* temp = last->next;
         if (last->next == last) {
-            last == nullptr;
+            last = nullptr;
         } else {
             last->next = last->next->next;
         }
@@ -202,13 +201,10 @@ const type& CLinkedList<type>::operator[](int index) {
     }
     Node<type>* aux = last->next;
     int aux_index = 0;
-    do {
-        if (aux_index == index) {
-            break;
-        }
-        aux_index++;
+    while (aux_index < index) {
+        ++aux_index;
         aux = aux->next;
-    } while (aux != last->next);
+    }
     return aux->data;
 }
 
@@ -219,13 +215,10 @@ type& CLinkedList<type>::operator[](int index) const {
     }
     Node<type>* aux = last->next;
     int aux_index = 0;
-    do {
-        if (aux_index == index) {
-            break;
-        }
-        aux_index++;
+    while (aux_index < index) {
+        ++aux_index;
         aux = aux->next;
-    } while (aux != last->next);
+    }
     return aux->data;
 }
 
@@ -248,16 +241,17 @@ bool CLinkedList<type>::erase(const type& value) {
         return false;
     }
 
+    Node<type>* temp = before->next;
     if (before->next == before) {
         last = nullptr;
     } else {
-        before->next = before->next->next;
         if (before->next == last) {
             last = before;
         }
+        before->next = before->next->next;
     }
     count--;
-    delete before->next;
+    delete temp;
     return true;
 }
 
@@ -282,16 +276,16 @@ int main() {
     my_list.push_back(4);
     my_list.push_back(5);
     my_list.push_back(6);
-    //my_list.push_front(0);
+    my_list.push_front(0);
 
-    //my_list.insert_after(5, 27);
-    //my_list.insert_after(6, 27);
-    //my_list.insert_before(4, 22);
+    my_list.insert_after(5, 27);
+    my_list.insert_after(6, 27);
+    my_list.insert_before(4, 22);
 
-    //my_list.pop_front();
-    //my_list.pop_back();
+    my_list.pop_front();
+    my_list.pop_back();
 
-    //my_list.erase(6);
+    my_list.erase(6);
 
     /*for (int i = 0; i < my_list.count; i++) {
         std::cout << my_list[i] << " ";
@@ -299,7 +293,7 @@ int main() {
 
     my_list.print();
 
-    //std::cout << std::endl;
+    std::cout << std::endl;
     std::cin.get();
 
     return 0;

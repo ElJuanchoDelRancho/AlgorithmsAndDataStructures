@@ -3,7 +3,7 @@
     Purpose: Doubly Linked List implementation in C++
 
     @author: Juan Castillo
-    @version: 1.0 04/06/2019
+    @version: 1.1 07/06/2019
 */
 
 #include <iostream>
@@ -14,7 +14,7 @@ class Node
 {
 public:
     Node() { next = nullptr; prev = nullptr; }
-    Node(type data) { this->data = data; next = nullptr; prev = nullptr; }
+    Node(const type& data) { this->data = data; next = nullptr; prev = nullptr; }
 
     type data;
     Node<type>* next;
@@ -232,7 +232,9 @@ bool DLinkedList<type>::erase(const type& value) {
     }
     if (current == head) {
         head = head->next;
-        head->prev = nullptr;
+        if (head != nullptr) {
+            head->prev = nullptr;
+        }
     } else if (current->next == nullptr) {
         current->prev->next = nullptr;
     } else {
@@ -269,6 +271,9 @@ int main() {
     my_list.insert_after(5, 27);
     my_list.insert_after(6, 27);
     my_list.insert_before(4, 22);
+
+    my_list.pop_front();
+    my_list.pop_back();
 
     my_list.erase(6);
 

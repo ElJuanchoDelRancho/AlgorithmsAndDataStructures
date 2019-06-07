@@ -3,7 +3,7 @@
     Purpose: Singly Linked List implementation in C++
 
     @author: Juan Castillo
-    @version: 1.1 04/06/2019
+    @version: 1.2 07/06/2019
 */
 
 #include <iostream>
@@ -14,7 +14,7 @@ class Node
 {
 public:
     Node() { next = nullptr; }
-    Node(type data) { this->data = data; next = nullptr; }
+    Node(const type& data) { this->data = data; next = nullptr; }
 
     type data;
     Node<type>* next;

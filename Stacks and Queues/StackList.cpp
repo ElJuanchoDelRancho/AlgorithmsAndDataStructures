@@ -3,7 +3,7 @@
     Purpose: Stack implementation with linked list
 
     @author: Juan Castillo
-    @version: 1.0 04/06/2019
+    @version: 1.1 07/06/2019
 */
 
 #include <iostream>
@@ -14,7 +14,7 @@ class Node
 {
 public:
     Node() { next = nullptr; }
-    Node(type data) { this->data = data; next = nullptr; }
+    Node(const type& data) { this->data = data; next = nullptr; }
 
     type data;
     Node<type>* next;
