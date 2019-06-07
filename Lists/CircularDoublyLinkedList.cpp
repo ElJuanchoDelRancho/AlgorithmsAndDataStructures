@@ -3,7 +3,7 @@
     Purpose: Circular Doubly Linked List implementation in C++
 
     @author: Juan Castillo
-    @version: 1.0 07/06/2019
+    @version: 1.1 07/06/2019
 */
 
 #include <iostream>
@@ -280,24 +280,21 @@ int main() {
     my_list.push_back(3);
     my_list.push_back(4);
     my_list.push_back(5);
-    my_list.push_back(6);
+    my_list.push_front(0);
 
-    my_list.insert_after(5, 27);
-    my_list.insert_after(6, 27);
+    my_list.insert_after(5, 43);
     my_list.insert_before(4, 22);
-
+    
     my_list.pop_front();
     my_list.pop_back();
-
-    my_list.erase(6);
-
-    /*for (int i = 0; i < my_list.count; i++) {
-        std::cout << my_list[i] << " ";
-    }*/
+    my_list.erase(3);
 
     my_list.print();
-
-    std::cout << std::endl;
+    for (int i = 0; i < my_list.count; i++) {
+        std::cout << my_list[i] << " ";
+    }
+    std::cout << "\nFront: " << my_list.front();
+    std::cout << "\nBack: " << my_list.back();
     std::cin.get();
 
     return 0;
