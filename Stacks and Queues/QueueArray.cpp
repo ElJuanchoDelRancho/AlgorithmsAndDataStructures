@@ -93,7 +93,7 @@ int main() {
         my_queue.pop();
     }
 
-    std::cout << "Juan estuvo aquí";
+    std::cout << "Juan no estuvo aquí";
 
     std::cin.get();
 

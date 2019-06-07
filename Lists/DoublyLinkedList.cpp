@@ -266,7 +266,11 @@ int main() {
     my_list.push_back(5);
     my_list.push_back(6);
 
-    my_list.erase(3);
+    my_list.insert_after(5, 27);
+    my_list.insert_after(6, 27);
+    my_list.insert_before(4, 22);
+
+    my_list.erase(6);
 
     /*for (int i = 0; i < my_list.count; i++) {
         std::cout << my_list[i] << " ";
