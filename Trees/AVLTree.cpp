@@ -1,9 +1,9 @@
 /**
-    BinarySearchTree.cpp
-    Purpose: Binary Search Tree implementation in C++
+    AVLTree.cpp
+    Purpose: AVL Tree implementation in C++
 
     @author: Juan Castillo
-    @version: 1.2 09/06/2019
+    @version: 1.0 09/06/2019
 */
 
 #include <iostream>
@@ -21,11 +21,11 @@ public:
 };
 
 template<class type>
-class BinaryTree
+class AVLTree
 {
 public:
-    BinaryTree();
-    ~BinaryTree();
+    AVLTree();
+    ~AVLTree();
 
     bool insert(const type& value);
     bool erase(const type& value);
@@ -46,75 +46,102 @@ private:
     int height(Node<type>* leaf);
     void clear(Node<type>* leaf);
 
+    int balance(Node<type>* leaf);
+    Node<type>* left_rotation(Node<type>* leaf);
+    Node<type>* right_rotation(Node<type>* leaf);
+
     Node<type>* root;
 };
 
 template<class type>
-BinaryTree<type>::BinaryTree() {
+AVLTree<type>::AVLTree() {
     root = nullptr;
 }
 
 template<class type>
-BinaryTree<type>::~BinaryTree() {
+AVLTree<type>::~AVLTree() {
     clear();
 }
 
 template<class type>
-bool BinaryTree<type>::insert(const type& value) {
+bool AVLTree<type>::insert(const type& value) {
     return insert(&root, value);
 }
 
 template<class type>
-bool BinaryTree<type>::erase(const type& value) {
+bool AVLTree<type>::erase(const type& value) {
     return erase(&root, value);
 }
 
 template<class type>
-Node<type>* BinaryTree<type>::search(const type& value) {
+Node<type>* AVLTree<type>::search(const type& value) {
     return search(root, value);
 }
 
 template<class type>
-void BinaryTree<type>::preorder_print() {
+void AVLTree<type>::preorder_print() {
     preorder_print(root);
 }
 
 template<class type>
-void BinaryTree<type>::inorder_print() {
+void AVLTree<type>::inorder_print() {
     inorder_print(root);
 }
 
 template<class type>
-void BinaryTree<type>::postorder_print() {
+void AVLTree<type>::postorder_print() {
     postorder_print(root);
 }
 
 template<class type>
-int BinaryTree<type>::height() {
+int AVLTree<type>::height() {
     return height(root);
 }
 
 template<class type>
-void BinaryTree<type>::clear() {
+void AVLTree<type>::clear() {
     clear(root);
     root = nullptr;
 }
 
 template<class type>
-bool BinaryTree<type>::insert(Node<type>** leaf, const type& value) {
+bool AVLTree<type>::insert(Node<type>** leaf, const type& value) {
+    bool was_inserted = false;
+    
     if (*leaf == nullptr) {
         *leaf = new Node<type>(value);
-        return true;
+        was_inserted = true;
     } else if ((*leaf)->data > value) {
-        return insert(&(*leaf)->left, value);
+        was_inserted = insert(&(*leaf)->left, value);
     } else if ((*leaf)->data < value) {
-        return insert(&(*leaf)->right, value);
+        was_inserted = insert(&(*leaf)->right, value);
+    } else {
+        was_inserted = false;
     }
-    return false;
+
+    if (was_inserted == false) {
+        return false;
+    }
+
+    int balance_factor = balance(*leaf);
+
+    if (balance_factor > 1 && value > (*leaf)->right->data) { // Case RR
+        *leaf = left_rotation(*leaf);
+    } else if (balance_factor > 1) { // Case RL
+        (*leaf)->right = right_rotation((*leaf)->right);
+        *leaf = left_rotation(*leaf);
+    } else if (balance_factor < -1 && value < (*leaf)->left->data) { // Case LL
+        *leaf = right_rotation(*leaf);
+    } else if (balance_factor < -1) { // Case LR
+        (*leaf)->left = left_rotation((*leaf)->left);
+        *leaf = right_rotation(*leaf);
+    }
+
+    return was_inserted;
 }
 
 template<class type>
-bool BinaryTree<type>::erase(Node<type>** leaf, const type& value) {
+bool AVLTree<type>::erase(Node<type>** leaf, const type& value) {
     if (*leaf != nullptr) {
 
         if ((*leaf)->data > value) {
@@ -137,16 +164,32 @@ bool BinaryTree<type>::erase(Node<type>** leaf, const type& value) {
                 (*leaf)->data = aux->data;
                 erase(&(*leaf)->left, aux->data);
             }
+
+            if (root == nullptr) {
+                return true;
+            }
+
+            int balance_factor = balance(*leaf);
+            if (balance_factor > 1 && value > (*leaf)->right->data) { // Case RR
+                *leaf = left_rotation(*leaf);
+            } else if (balance_factor > 1) { // Case RL
+                (*leaf)->right = right_rotation((*leaf)->right);
+                *leaf = left_rotation(*leaf);
+            } else if (balance_factor < -1 && value < (*leaf)->left->data) { // Case LL
+                *leaf = right_rotation(*leaf);
+            } else if (balance_factor < -1) { // Case LR
+                (*leaf)->left = left_rotation((*leaf)->left);
+                *leaf = right_rotation(*leaf);
+            }
             return true;
         }
 
-    } else {
-        return false;
     }
+    return false;
 }
 
 template<class type>
-Node<type>* BinaryTree<type>::search(Node<type>* leaf, const type& value) {
+Node<type>* AVLTree<type>::search(Node<type>* leaf, const type& value) {
     if (leaf != nullptr) {
         if (leaf->data > value) {
             return search(leaf->left, value);
@@ -160,7 +203,7 @@ Node<type>* BinaryTree<type>::search(Node<type>* leaf, const type& value) {
 }
 
 template<class type>
-void BinaryTree<type>:: preorder_print(Node<type>* leaf) {
+void AVLTree<type>:: preorder_print(Node<type>* leaf) {
     if (leaf != nullptr) {
         std::cout << leaf->data << " ";
         preorder_print(leaf->left);
@@ -169,7 +212,7 @@ void BinaryTree<type>:: preorder_print(Node<type>* leaf) {
 }
 
 template<class type>
-void BinaryTree<type>::inorder_print(Node<type>* leaf) {
+void AVLTree<type>::inorder_print(Node<type>* leaf) {
     if (leaf != nullptr) {
         inorder_print(leaf->left);
         std::cout << leaf->data << " ";
@@ -178,7 +221,7 @@ void BinaryTree<type>::inorder_print(Node<type>* leaf) {
 }
 
 template<class type>
-void BinaryTree<type>::postorder_print(Node<type>* leaf) {
+void AVLTree<type>::postorder_print(Node<type>* leaf) {
     if (leaf != nullptr) {
         postorder_print(leaf->left);
         postorder_print(leaf->right);
@@ -187,7 +230,7 @@ void BinaryTree<type>::postorder_print(Node<type>* leaf) {
 }
 
 template<class type>
-int BinaryTree<type>::height(Node<type>* leaf) {
+int AVLTree<type>::height(Node<type>* leaf) {
     if (leaf == nullptr) {
         return 0;
     }
@@ -197,7 +240,7 @@ int BinaryTree<type>::height(Node<type>* leaf) {
 }
 
 template<class type>
-void BinaryTree<type>::clear(Node<type>* leaf) {
+void AVLTree<type>::clear(Node<type>* leaf) {
     if (leaf != nullptr) {
         clear(leaf->left);
         clear(leaf->right);
@@ -205,26 +248,48 @@ void BinaryTree<type>::clear(Node<type>* leaf) {
     }
 }
 
+template<class type>
+int AVLTree<type>::balance(Node<type>* leaf) {
+    if (leaf == nullptr) {
+        return 0;
+    }
+    return height(leaf->right) - height(leaf->left);
+}
+
+template<class type>
+Node<type>* AVLTree<type>::left_rotation(Node<type>* leaf) {
+    Node<type>* new_root = leaf->right;
+    leaf->right = new_root->left;
+    new_root->left = leaf;
+    return new_root;
+}
+
+template<class type>
+Node<type>* AVLTree<type>::right_rotation(Node<type>* leaf) {
+    Node<type>* new_root = leaf->left;
+    leaf->left = new_root->right;
+    new_root->right = leaf;
+    return new_root;
+}
+
 int main() {
-    BinaryTree<int> tree;
-
-    tree.insert(10);
-    tree.insert(8);
-    tree.insert(9);
-    tree.insert(34);
-    tree.insert(3);
-    tree.insert(15);
-    tree.insert(17);
+    AVLTree<int> tree;
     
-    tree.erase(10);
+    tree.insert(65);
+    tree.insert(74);
+    tree.insert(50);
+    tree.insert(41);
+    tree.insert(46);
+    tree.insert(70);
+    tree.insert(97);
+    tree.insert(54);
+    tree.insert(17);
 
-    tree.preorder_print();
-    std::cout << std::endl;
     tree.inorder_print();
-    std::cout << std::endl;
-    tree.postorder_print();
-    std::cout << std::endl;
-    std::cout << "Height: " << tree.height() << '\n';
+    tree.erase(74);
+    tree.erase(70);
+    std::cout << '\n';
+    tree.inorder_print();
 
     std::cin.get();
 
