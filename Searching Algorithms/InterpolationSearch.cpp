@@ -30,7 +30,6 @@ int main() {
 
     for (int i = 0; i < size; i++) {
         array[i] = random_number(rng, 1, 1000);
-        
     }
 
     insertion_sort(array, size);
